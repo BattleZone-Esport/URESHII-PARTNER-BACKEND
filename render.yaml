@@ -2,9 +2,9 @@ services:
   -       - key: MODEL_PATH
         value: /opt/render/project/src/models/phi-3.1-mini-4k-instruct.gguf
       - key: MODEL_URL
-        value: https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf
+        sync: false  # Set this in Render dashboard
       - key: HUGGING_FACE_TOKEN
-        value: hf_KADHlfYZQxuWUbNhfnlINvwyAAuqDHkMXipe: web
+        sync: false  # Set this in Render dashboardpe: web
     name: coding-assistant-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
@@ -13,8 +13,6 @@ services:
     branch: main
     healthCheckPath: /health
     envVars:
-      - key: MONGO_URI
-        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: MODEL_PATH
