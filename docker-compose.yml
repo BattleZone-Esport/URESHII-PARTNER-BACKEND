@@ -6,18 +6,18 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "${PORT:-8000}:${PORT:-8000}"
+      - "8000:8000"  # Use explicit port for development
     environment:
-      - MONGO_URI=${MONGO_URI}
-      - MODEL_PATH=${MODEL_PATH:-./models/phi-3-mini-4k-instruct-q4.gguf}
+      - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/coding_assistant}
+      - MODEL_PATH=/opt/render/project/src/models/phi-3-mini-4k-instruct-q4.gguf
       - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
-      - PORT=${PORT:-8000}
+      - PORT=8000
     volumes:
-      - ./models:/app/models
-      - ./logs:/app/logs
+      - ./models:/opt/render/project/src/models
+      - ./logs:/opt/render/project/src/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8000}/health"]
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -27,19 +27,25 @@ services:
 
   # Optional: Local MongoDB for development
   # Uncomment if you want to use local MongoDB instead of Atlas
-  # mongodb:
-  #   image: mongo:7.0
-  #   restart: unless-stopped
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
-  #     - MONGO_INITDB_ROOT_USERNAME=admin
-  #     - MONGO_INITDB_ROOT_PASSWORD=password
-  #     - MONGO_INITDB_DATABASE=coding_assistant
-  #   volumes:
-  #     - mongo-data:/data/db
-  #   networks:
-  #     - app-network
+  mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=coding_assistant
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
 
 networks:
   app-network:
