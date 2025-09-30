@@ -21,16 +21,22 @@ def download_file(url: str, dest: Path, chunk_size: int = 8192):
     """Download a file with progress bar and verification"""
     # First check if URL is accessible
     try:
-        head_response = requests.head(url, allow_redirects=True, timeout=10)
+        head_response = requests.head(url, allow_redirects=True, timeout=30)
         head_response.raise_for_status()
         expected_size = int(head_response.headers.get('content-length', 0))
         if expected_size < 2000 * 1024 * 1024:  # Less than 2GB
-            raise ValueError(f"Model file seems too small: {expected_size / (1024*1024):.2f} MB")
-    except Exception as e:
+            raise ValueError(f"Model file at URL seems too small: {expected_size / (1024*1024):.2f} MB. Expected at least 2GB.")
+    except requests.exceptions.Timeout:
+        raise requests.exceptions.Timeout("Connection timed out while checking model URL. Please verify your internet connection.")
+    except requests.exceptions.RequestException as e:
         print(f"Error checking model URL: {e}")
         raise
+    except ValueError as e:
+        print(f"Error with model file size: {e}")
+        raise
 
-    response = requests.get(url, stream=True, timeout=30)
+    # Download with a longer timeout for large files
+    response = requests.get(url, stream=True, timeout=300)  # 5 minutes timeout
     response.raise_for_status()
     total_size = int(response.headers.get('content-length', 0))
 
@@ -55,20 +61,30 @@ def download_file(url: str, dest: Path, chunk_size: int = 8192):
 
 def main():
     """Main function to download the model"""
+    # Get model path from environment or use default
     model_dir = Path(os.getenv("MODEL_PATH", "./models")).parent
     model_dir.mkdir(exist_ok=True, parents=True)
 
     model_path = model_dir / "phi-3.1-mini-4k-instruct.gguf"
 
     if model_path.exists():
-        print(f"Model already exists at {model_path}")
-        return
+        # Verify existing file size
+        file_size_gb = model_path.stat().st_size / (1024**3)
+        if file_size_gb >= 2.0:
+            print(f"✓ Model already exists at {model_path} (Size: {file_size_gb:.2f} GB)")
+            return
+        else:
+            print(f"! Found incomplete model file ({file_size_gb:.2f} GB), re-downloading...")
+            model_path.unlink()
 
     print("Downloading Phi-3.1-mini-4k-instruct model...")
     print("This may take a while depending on your internet connection...")
 
-    # Using the Q4_K_M quantized version for lower memory usage
-    model_url = "https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf"
+    # Get model URL from environment or use default
+    model_url = os.getenv(
+        "MODEL_URL",
+        "https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf"
+    )
 
     try:
         download_file(model_url, model_path)
@@ -79,17 +95,22 @@ def main():
         print(f"  Size: {file_size_gb:.2f} GB")
         
         if file_size_gb < 2.0:  # Model should be at least 2GB
-            raise RuntimeError(f"Downloaded model is too small ({file_size_gb:.2f} GB)")
+            raise RuntimeError(f"Downloaded model is too small ({file_size_gb:.2f} GB). The model might be corrupted or incomplete.")
             
+    except requests.exceptions.Timeout:
+        print("❌ Error: Download timed out. Please check your internet connection and try again.")
+        if model_path.exists():
+            model_path.unlink()
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Network error while downloading model: {str(e)}")
+        if model_path.exists():
+            model_path.unlink()
+        sys.exit(1)
     except Exception as e:
-        print(f"Error downloading model: {e}")
+        print(f"❌ Error downloading model: {str(e)}")
         if model_path.exists():
             model_path.unlink()  # Clean up partial download
-        sys.exit(1)
-        print(f"✓ Model downloaded successfully to {model_path}")
-        print(f"  Size: {model_path.stat().st_size / (1024**3):.2f} GB")
-    except Exception as e:
-        print(f"✗ Error downloading model: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
