@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: coding-assistant-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    repo: https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MODEL_PATH
+        value: ./models/phi-3.1-mini-4k-instruct.gguf
+      - key: PORT
+        value: 8000
+    autoDeploy: true
+    plan: free
