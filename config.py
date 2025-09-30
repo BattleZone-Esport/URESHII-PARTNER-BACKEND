@@ -49,7 +49,6 @@ class Settings(BaseSettings):
     
     # Server Configuration
     port: int = Field(
-        default=8000,
         env="PORT",
         description="Server port"
     )
