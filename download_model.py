@@ -8,7 +8,7 @@ import os
 import sys
 import requests
 from pathlib import Path
-from tqdm import tqdm
+import tqdm
 
 def download_file(url: str, dest: Path, chunk_size: int = 8192):
     """Download a file with progress bar"""
