@@ -111,8 +111,8 @@ async def download_model():
     if not Path(MODEL_PATH).exists():
         logger.info("Model not found. Downloading Phi-3.1-mini-4k-instruct...")
         try:
-            # Using a quantized GGUF model suitable for low memory
-            model_url = "https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf"
+            # Using the official Microsoft quantized GGUF model
+            model_url = "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4_k_m.gguf"
             
             async with httpx.AsyncClient() as client:
                 response = await client.get(model_url, follow_redirects=True, timeout=300.0)
