@@ -9,7 +9,7 @@ services:
       - "${PORT:-8000}:${PORT:-8000}"
     environment:
       - MONGO_URI=${MONGO_URI}
-      - MODEL_PATH=${MODEL_PATH:-./models/phi-3.1-mini-4k-instruct.gguf}
+      - MODEL_PATH=${MODEL_PATH:-./models/phi-3-mini-4k-instruct-q4.gguf}
       - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
       - PORT=${PORT:-8000}
     volumes:

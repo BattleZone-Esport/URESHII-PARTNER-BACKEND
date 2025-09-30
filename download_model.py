@@ -1,6 +1,6 @@
  #!/usr/bin/env python3
 """
-Model download script for Phi-3.1
+Model download script for Phi-3-mini
 Can be run separately to pre-download the model
 """
 

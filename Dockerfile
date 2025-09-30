@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Create models directory and set up environment
 RUN mkdir -p /opt/render/project/src/models
-ENV MODEL_PATH=/opt/render/project/src/models/phi-3.1-mini-4k-instruct.gguf
+ENV MODEL_PATH=/opt/render/project/src/models/phi-3-mini-4k-instruct-q4.gguf
 
 # Copy application code
 COPY . .
