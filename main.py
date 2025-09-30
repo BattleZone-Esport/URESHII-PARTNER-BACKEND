@@ -104,8 +104,28 @@ class UserAuth(BaseModel):
     password: str
 
 async def download_model():
-    """Placeholder for backward compatibility - model is now loaded directly via from_pretrained"""
-    logger.info("Model will be downloaded automatically via from_pretrained")
+    """Download the Phi-3-mini model if not present"""
+    model_dir = Path("./models")
+    model_dir.mkdir(exist_ok=True)
+    
+    if not Path(MODEL_PATH).exists():
+        logger.info("Model not found. Downloading Phi-3-mini model...")
+        try:
+            # Using the official Microsoft quantized GGUF model - direct download URL
+            model_url = "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"
+            
+            async with httpx.AsyncClient() as client:
+                response = await client.get(model_url, follow_redirects=True, timeout=300.0)
+                if response.status_code == 200:
+                    with open(MODEL_PATH, "wb") as f:
+                        f.write(response.content)
+                    logger.info("Model downloaded successfully")
+                else:
+                    logger.error(f"Failed to download model: {response.status_code}")
+                    logger.info("Using fallback model configuration")
+        except Exception as e:
+            logger.error(f"Error downloading model: {e}")
+            logger.info("Continuing without model download - will use mock responses")
 
 async def initialize_llm():
     """Initialize the language model"""
@@ -114,16 +134,19 @@ async def initialize_llm():
         # Import llama-cpp-python only when needed
         from llama_cpp import Llama
         
-        logger.info("Loading Phi-3 mini model using from_pretrained...")
-        llm = Llama.from_pretrained(
-            repo_id="microsoft/Phi-3-mini-4k-instruct-gguf",
-            filename="Phi-3-mini-4k-instruct-fp16.gguf",
-            n_ctx=4096,  # Context window
-            n_threads=2,  # Use 2 threads for low memory usage
-            n_gpu_layers=0,  # CPU only for Render free tier
-            verbose=False
-        )
-        logger.info("Model loaded successfully")
+        if Path(MODEL_PATH).exists():
+            logger.info("Loading Phi-3-mini model...")
+            llm = Llama(
+                model_path=MODEL_PATH,
+                n_ctx=4096,  # Context window
+                n_threads=2,  # Use 2 threads for low memory usage
+                n_gpu_layers=0,  # CPU only for Render free tier
+                verbose=False
+            )
+            logger.info("Model loaded successfully")
+        else:
+            logger.warning("Model file not found. Using mock responses.")
+            llm = None
     except ImportError:
         logger.warning("llama-cpp-python not installed. Using mock responses.")
         llm = None
@@ -160,7 +183,10 @@ async def lifespan(app: FastAPI):
     logger.info("Starting up...")
     initialize_mongodb()
     
-    # Initialize the model
+    # Start model download and loading in background
+    global model_loading_task
+    model_loading_task = asyncio.create_task(download_model())
+    await model_loading_task
     await initialize_llm()
     
     yield
