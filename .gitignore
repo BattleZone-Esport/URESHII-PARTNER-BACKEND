@@ -62,7 +62,6 @@ models/
 *.onnx
 
 # Docker
-.dockerignore
 docker-compose.override.yml
 
 # Testing
