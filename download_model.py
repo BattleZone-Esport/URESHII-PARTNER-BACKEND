@@ -71,7 +71,7 @@ def main():
     model_dir = Path(os.getenv("MODEL_PATH", "./models")).parent
     model_dir.mkdir(exist_ok=True, parents=True)
 
-    model_path = model_dir / "phi-3.1-mini-4k-instruct.gguf"
+    model_path = model_dir / "phi-3-mini-4k-instruct-q4.gguf"
 
     if model_path.exists():
         # Verify existing file size
@@ -93,7 +93,7 @@ def main():
     # Using the Q4_K_M quantized version for lower memory usage
     model_url = os.getenv(
         "MODEL_URL",
-        "https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf"  # Using phi-2 as it's publicly available
+        "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"  # Using official Microsoft model
     )
 
     try:
