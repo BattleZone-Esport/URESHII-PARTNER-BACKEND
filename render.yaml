@@ -1,8 +1,10 @@
 services:
   -       - key: MODEL_PATH
-        value: /opt/render/project/src/models/phi-2.Q4_K_M.gguf
+        value: /opt/render/project/src/models/phi-3.1-mini-4k-instruct.gguf
       - key: MODEL_URL
-        value: https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.ggufpe: web
+        value: https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf
+      - key: HUGGING_FACE_TOKEN
+        value: hf_KADHlfYZQxuWUbNhfnlINvwyAAuqDHkMXipe: web
     name: coding-assistant-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
