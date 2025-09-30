@@ -21,7 +21,7 @@ def download_file(url: str, dest: Path, chunk_size: int = 8192):
     """Download a file with progress bar and verification"""
     # Setup headers with token if available
     headers = {}
-    hf_token = os.getenv("HUGGING_FACE_TOKEN")
+    hf_token = os.getenv("HF_TOKEN")
     if hf_token:
         headers["Authorization"] = f"Bearer {hf_token}"
 
@@ -88,7 +88,7 @@ def main():
 
     # Get model URL from environment or use default
     # Get Hugging Face token if available
-    hf_token = os.getenv("HUGGING_FACE_TOKEN")
+    hf_token = os.getenv("HF_TOKEN")
     
     # Using the Q4_K_M quantized version for lower memory usage
     model_url = os.getenv(
