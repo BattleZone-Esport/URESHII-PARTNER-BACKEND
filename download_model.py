@@ -31,8 +31,8 @@ def download_file(url: str, dest: Path, chunk_size: int = 8192):
 
 def main():
     """Main function to download the model"""
-    model_dir = Path("./models")
-    model_dir.mkdir(exist_ok=True)
+    model_dir = Path(os.getenv("MODEL_PATH", "./models")).parent
+    model_dir.mkdir(exist_ok=True, parents=True)
 
     model_path = model_dir / "phi-3.1-mini-4k-instruct.gguf"
 

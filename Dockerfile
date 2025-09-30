@@ -1,8 +1,8 @@
 # Use Python 3.13 slim image for smaller size
 FROM python:3.13-slim
 
-# Set working directory
-WORKDIR /app
+# Set working directory to match Render's path
+WORKDIR /opt/render/project/src
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -24,8 +24,9 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Create models directory
-RUN mkdir -p /app/models
+# Create models directory and set up environment
+RUN mkdir -p /opt/render/project/src/models
+ENV MODEL_PATH=/opt/render/project/src/models/phi-3.1-mini-4k-instruct.gguf
 
 # Copy application code
 COPY . .

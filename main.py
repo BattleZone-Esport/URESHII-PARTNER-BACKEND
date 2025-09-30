@@ -47,9 +47,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Environment variables
-PORT = int(os.getenv("PORT", 8000))  # Default only for local development
+PORT = int(os.getenv("PORT"))  # Port is required in production
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-MODEL_PATH = os.path.abspath(os.getenv("MODEL_PATH", os.path.join(os.getcwd(), "models", "phi-3.1-mini-4k-instruct.gguf")))
+MODEL_PATH = os.getenv("MODEL_PATH", "/opt/render/project/src/models/phi-3.1-mini-4k-instruct.gguf")
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
