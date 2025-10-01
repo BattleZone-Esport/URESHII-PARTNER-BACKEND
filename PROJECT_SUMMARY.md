@@ -8,7 +8,7 @@ I've successfully created a **production-ready backend** for your Coding AI + Ch
 
 ### Core Components
 - ✅ **FastAPI Backend** with Python 3.13.4
-- ✅ **Phi-3-mini-4k-instruct** model integration via llama-cpp-python
+- ✅ **Phi-2** model integration via llama-cpp-python (Q4_K_M quantized)
 - ✅ **MongoDB Atlas** support for persistent storage
 - ✅ **Docker** containerization with optimized Dockerfile
 - ✅ **JWT Authentication** with secure token management
@@ -102,7 +102,7 @@ docker-compose up
 2. Set environment variables:
    - `MONGO_URI` - Your MongoDB Atlas connection string
    - `SECRET_KEY` - Random secure string
-   - `MODEL_PATH` - ./models/phi-3-mini-4k-instruct-q4.gguf
+  - `MODEL_PATH` - ./models/phi-2.Q4_K_M.gguf
 3. Deploy automatically on push to main branch
 
 ## 🔑 Key Features Verification

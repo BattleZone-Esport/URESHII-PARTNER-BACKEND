@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 # Environment variables
 PORT = int(os.getenv("PORT"))  # Port is required in production
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-MODEL_PATH = os.getenv("MODEL_PATH", "/opt/render/project/src/models/phi-3-mini-4k-instruct-q4.gguf")
+MODEL_PATH = os.getenv("MODEL_PATH", "/opt/render/project/src/models/phi-2.Q4_K_M.gguf")
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -111,8 +111,8 @@ async def download_model():
     if not Path(MODEL_PATH).exists():
         logger.info("Model not found. Downloading Phi-3-mini model...")
         try:
-            # Using the official Microsoft quantized GGUF model - direct download URL
-            model_url = "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"
+            # Using the smaller TheBloke phi-2 quantized GGUF model (Q4_K_M)
+            model_url = "https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf"
             
             async with httpx.AsyncClient() as client:
                 response = await client.get(model_url, follow_redirects=True, timeout=300.0)

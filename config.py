@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     )
     
     model_url: str = Field(
-        default="https://huggingface.co/TheBloke/Phi-3-mini-4k-instruct-GGUF/resolve/main/phi-3-mini-4k-instruct.Q4_K_M.gguf",
+    default="https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf",
         env="MODEL_URL",
         description="URL to download the model from"
     )

@@ -9,7 +9,7 @@ services:
       - "8000:8000"  # Use explicit port for development
     environment:
       - MONGO_URI=${MONGO_URI:-mongodb://localhost:27017/coding_assistant}
-      - MODEL_PATH=/opt/render/project/src/models/phi-3-mini-4k-instruct-q4.gguf
+      - MODEL_PATH=/opt/render/project/src/models/phi-2.Q4_K_M.gguf
       - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
       - PORT=8000
     volumes:

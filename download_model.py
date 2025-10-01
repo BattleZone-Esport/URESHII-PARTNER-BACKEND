@@ -71,7 +71,7 @@ def main():
     model_dir = Path(os.getenv("MODEL_PATH", "./models")).parent
     model_dir.mkdir(exist_ok=True, parents=True)
 
-    model_path = model_dir / "phi-3-mini-4k-instruct-q4.gguf"
+    model_path = model_dir / "phi-2.Q4_K_M.gguf"
 
     if model_path.exists():
         # Verify existing file size
@@ -90,10 +90,10 @@ def main():
     # Get Hugging Face token if available
     hf_token = os.getenv("HF_TOKEN")
     
-    # Using the Q4_K_M quantized version for lower memory usage
+    # Using the Q4_K_M quantized version for lower memory usage (phi-2)
     model_url = os.getenv(
         "MODEL_URL",
-        "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"  # Using official Microsoft model
+        "https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf"
     )
 
     try:

@@ -9,7 +9,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    MODEL_PATH=/opt/render/project/src/models/phi-3-mini-4k-instruct-q4.gguf
+    MODEL_PATH=/opt/render/project/src/models/phi-2.Q4_K_M.gguf
 
 # Install system dependencies needed for building packages
 RUN apt-get update && apt-get install -y \
